@@ -1,0 +1,48 @@
+---
+title: "Visualización de Datos - PEC 2 - Mapa de calor"
+author: "Ángel Moreno Prieto"
+date: "2024-11-11"
+output:
+  html_document:
+    highlight: default
+    theme: readable
+---
+
+<body style="background-color:#fff8e3;">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Instalación de diferentes paquetes que serán necesarios
+if (!require("ggplot2")) install.packages("ggplot2")
+library(ggplot2)
+if (!require("viridis")) install.packages("viridis")
+library(viridis)
+```
+
+# Relación entre presupuesto y recaudación de las películas más populares hasta 2017 {-}
+
+```{r message=FALSE, warning=FALSE}
+df <- read.csv("./data/movies_metadata.csv")
+df <- na.omit(df)
+df$budget <- as.numeric(df$budget)
+```
+
+```{r message=FALSE, warning=FALSE}
+ggplot(df, aes(x = budget, y = revenue)) +
+  geom_bin2d(bins = 30) +
+  scale_x_log10() +
+  scale_y_log10() +
+  scale_fill_viridis(option = "C", name = "Total") +
+  labs(x = "Presupuesto", y = "Recaudación") +
+  theme_minimal() +
+  theme(
+    legend.position = "right"
+  )
+```
+
+***Fuentes:***
+
+- *https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset?resource=download&select=movies_metadata.csv*

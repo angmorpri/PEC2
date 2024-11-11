@@ -1,0 +1,70 @@
+---
+title: "Visualización de Datos - PEC 2 - Diagrama Voronoi"
+author: "Ángel Moreno Prieto"
+date: "2024-11-02"
+output:
+  html_document:
+    highlight: default
+    theme: readable
+---
+
+<body style="background-color:#fff8e3;">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Instalación de diferentes paquetes que serán necesarios
+if (!require("cluster")) install.packages("cluster")
+library(cluster)
+if (!require("ggplot2")) install.packages("ggplot2")
+library(ggplot2)
+if (!require("ggforce")) install.packages("ggforce")
+library(ggforce)
+```
+
+# Clasificación de géneros musicales más populares según sus parámetros de Spotify {-}
+
+```{r message=FALSE, warning=FALSE}
+df <- read.csv("./data/spotify_genres.csv")
+# https://www.kaggle.com/code/vatsalmavani/music-recommendation-system-using-spotify-dataset/
+genres <- c("pop", "rock", "hip hop", "r&b", "edm", "country", "jazz", "reggae", "latin", "classical")
+# https://blog.novecore.com/top-10-most-popular-music-genres/
+params <- c("genres", "energy", "danceability")
+udf <- df[df$genres %in% genres, params]
+```
+
+```{r message=FALSE, warning=FALSE}
+ggplot(udf, aes(x = energy, y = danceability, group = -1L)) +
+  geom_voronoi_tile(aes(fill = genres)) +
+  geom_voronoi_segment(color = "white") +
+  geom_point(size = 1, color = "black") +
+  geom_text(
+    aes(label = genres, size = 4),
+    family = "Malgun Gothic",
+    fontface = "bold",
+    color = "black",
+    alpha = 0.8,
+    stat = "delvor_summary",
+    switch.centroid = TRUE
+  ) +
+  labs(x = "energy", y = "danceability") +
+  scale_fill_brewer(palette = "Set3") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.title = element_text(size = 14),
+    panel.grid = element_blank(),
+    legend.position = "none",
+  )
+# https://ggforce.data-imaginist.com/reference/geom_delvor.html#aesthetics-1
+```
+
+***Fuentes:***
+
+- *https://www.kaggle.com/code/vatsalmavani/music-recommendation-system-using-spotify-dataset/"*
+- *https://blog.novecore.com/top-10-most-popular-music-genres/"*
+  
+
+
